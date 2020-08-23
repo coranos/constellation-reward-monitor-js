@@ -1,0 +1,11 @@
+{
+  "mainNetHostname" : "lb.constellationnetwork.io",
+  "mainNetPort" : 9000,
+  "addressPath": "address",
+  "addresses": [],
+  "discordToken": "",
+  "discordGuildId": "",
+  "discordChannelName": "",
+  "timeout": 60000,
+  "debug": true
+}
