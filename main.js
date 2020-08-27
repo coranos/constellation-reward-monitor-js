@@ -152,7 +152,7 @@ const getRewards = async () => {
     }
     const rewardsBalance = addressData.rewardsBalance;
     if (rewardsBalance == undefined) {
-      await send(`Address '${address}'' has no Rewards Balance.`);
+      await send(`Address '${address}'' has no Rewards Balance. @here`);
     } else {
       if (rewardsByAddress.has(address)) {
         const previous = rewardsByAddress.get(address);
