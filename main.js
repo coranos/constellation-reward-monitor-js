@@ -141,32 +141,36 @@ const get = async ( path) => {
 };
 
 const getRewards = async () => {
-  const addressPath = getConfig('addressPath');
-  const addresses = getConfig('addresses');
-  for (let ix = 0; ix < addresses.length; ix++) {
-    const address = addresses[ix];
-    const path = `/${addressPath}/${address}`;
-    const addressData = await get(path);
-    if (getConfig('debug')) {
-      console.log(getDate(), 'addressData', addressData);
-    }
-    const rewardsBalance = addressData.rewardsBalance;
-    if (rewardsBalance == undefined) {
-      await send(`Address '${address}'' has no Rewards Balance. @here`);
-    } else {
-      if (rewardsByAddress.has(address)) {
-        const previous = rewardsByAddress.get(address);
-        const diff = BigInt(rewardsBalance) - BigInt(previous);
-        if (diff <= BigInt(0)) {
-          await send(`Address '${address}' has Rewards Balance ${toWholeNumber(rewardsBalance)}, previous ${toWholeNumber(previous)}, diff ${toWholeNumber(diff)}. @here`);
-        } else {
-          await send(`Address '${address}' has Rewards Balance ${toWholeNumber(rewardsBalance)}, previous ${toWholeNumber(previous)}, diff ${toWholeNumber(diff)}.`);
-        }
-      } else {
-        await send(`Address '${address}' has Rewards Balance ${toWholeNumber(rewardsBalance)}, no previous.`);
+  try {
+    const addressPath = getConfig('addressPath');
+    const addresses = getConfig('addresses');
+    for (let ix = 0; ix < addresses.length; ix++) {
+      const address = addresses[ix];
+      const path = `/${addressPath}/${address}`;
+      const addressData = await get(path);
+      if (getConfig('debug')) {
+        console.log(getDate(), 'addressData', addressData);
       }
-      rewardsByAddress.set(address, rewardsBalance);
+      const rewardsBalance = addressData.rewardsBalance;
+      if (rewardsBalance == undefined) {
+        await send(`Address '${address}'' has no Rewards Balance. @here`);
+      } else {
+        if (rewardsByAddress.has(address)) {
+          const previous = rewardsByAddress.get(address);
+          const diff = BigInt(rewardsBalance) - BigInt(previous);
+          if (diff <= BigInt(0)) {
+            await send(`Address '${address}' has Rewards Balance ${toWholeNumber(rewardsBalance)}, previous ${toWholeNumber(previous)}, diff ${toWholeNumber(diff)}. @here`);
+          } else {
+            await send(`Address '${address}' has Rewards Balance ${toWholeNumber(rewardsBalance)}, previous ${toWholeNumber(previous)}, diff ${toWholeNumber(diff)}.`);
+          }
+        } else {
+          await send(`Address '${address}' has Rewards Balance ${toWholeNumber(rewardsBalance)}, no previous.`);
+        }
+        rewardsByAddress.set(address, rewardsBalance);
+      }
     }
+  } catch (error) {
+    console.log('error', error.message);
   }
   const timeout = getConfig('timeout');
   setTimeout(getRewards, timeout);
