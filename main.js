@@ -126,8 +126,13 @@ const get = async ( path) => {
           if (getConfig('debug')) {
             console.log(getDate(), 'get chunks', chunks);
           }
-          const json = JSON.parse(chunks);
-          resolve(json);
+
+          if (chunks.startsWith('{')) {
+            const json = JSON.parse(chunks);
+            resolve(json);
+          } else {
+            resolve('{}');
+          }
         }
       });
     });
